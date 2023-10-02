@@ -1,0 +1,268 @@
+INTEGRANTES
+Steeven Hilarion
+Fabian Ramos
+Nicol Velandia
+
+ARBOL HOJA MAS ABAJO..
+
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+struct Nodo{
+    int dato;
+    Nodo*izquierda;
+    Nodo*derecha;
+    Nodo*padre;
+};
+void insertar(Nodo*&, int, Nodo*& );
+void mostrar(Nodo *, int );
+void senalar(Nodo *);
+void mostrarhoja(Nodo *&);
+
+int main(){
+    Nodo* arbol = NULL;
+    int opcion, dato, cont=0;
+
+
+    do{
+        cout << "MENU" << endl;
+        cout << "1. Insertar un número" << endl;
+    	cout<<"2. Mostrar arbol"<<endl;
+	    cout<<"3. Mostrar ultima hoja "<<endl;
+        cout << "4. Salir" << endl;
+        cin >> opcion;
+        switch(opcion){
+            case 1: cout << "Digite un número: ";
+                cin >> dato;
+                    insertar(arbol, dato,NULL);
+                break;
+            case 2: mostrar(arbol, cont);
+            break;
+            case 3:mostrarhoja(arbol);
+        }
+
+}while(opcion!=4);
+}
+
+Nodo*relleno(int x, Nodo *&padre){
+    Nodo*nuevonodo=new Nodo();
+    nuevonodo->dato = x;
+        nuevonodo->izquierda = NULL;
+        nuevonodo->derecha = NULL;
+        nuevonodo->padre=padre;
+        return nuevonodo;
+}
+void insertar(Nodo*& arbol, int x, Nodo *&padre) {
+    if (arbol == NULL) {
+    Nodo*nuevonodo=relleno(x, padre);
+    arbol=nuevonodo;
+}
+    int raiz;
+    raiz=arbol->dato;
+    if(x<raiz){
+        insertar(arbol->izquierda,x,arbol);
+    }else{
+        insertar(arbol->derecha,x,arbol);
+    }
+}
+void mostrar(Nodo *arbol, int contador){
+    if(arbol==NULL){
+        return;
+    }else{
+        mostrar(arbol->derecha,contador+1);
+    }
+    for(int i=0; i<contador; i++){
+        cout<<"  ";
+    }
+    cout<<arbol->dato<<endl;
+    mostrar(arbol->izquierda,contador+1);
+}
+
+
+void senalar(Nodo *arbol){
+    if(arbol==NULL){
+        return;
+    }else if(arbol->padre){
+        return senalar(arbol->izquierda);
+        
+    }else{
+        return arbol;
+    }
+}
+
+void mostrarhoja(Nodo *&mostrador){
+    Nodo*vacio=senalar(mostrador->derecha);
+    mostrador->dato=vacio->senalar;
+    cout<<mostrador->dato;
+}
+
+
+
+//BUSQUEDA BINARIA DE LISTA ENLAZADA
+#include <iostream>
+
+using namespace std;
+
+// Definición de la estructura del nodo
+struct Node {
+    int lista;
+    Node* next;
+    Node(int val) : lista(val), next(nullptr) {}
+};
+
+// Función para buscar un elemento en una lista enlazada ordenada (búsqueda simulada binaria)
+Node* busquedabinaria(Node* head, int target) {
+    while (head != nullptr) {
+        if (head->lista == target) {
+            return head;
+        } else if (head->lista < target) {
+            head = head->next;
+        } else {
+            // Si el elemento actual es mayor que el objetivo, y la lista está ordenada,
+            // no se puede encontrar el objetivo, ya que los elementos restantes serán mayores.
+            break;
+        }
+    }
+    return nullptr; // El elemento no se encuentra en la lista
+}
+
+// Función para imprimir la lista enlazada
+void printList(Node* head) {
+    while (head != nullptr) {
+        cout << head->lista << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+int main() {
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head->next->next->next = new Node(4);
+    head->next->next->next->next = new Node(5);
+
+    cout << "Lista enlazada ordenada: ";
+    printList(head);
+
+    int target = 3;
+    Node* result = busquedabinaria(head, target);
+
+    if (result) {
+        cout << "Elemento " << target << " encontrado en la lista." << endl;
+    } else {
+        cout << "Elemento " << target << " no encontrado en la lista." << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+// QUICKSORT EN LISTA ENLAZADA 
+
+#include <iostream>
+
+using namespace std;
+
+
+struct Node {
+    int lista;
+    Node* sig;
+    Node(int val) : lista(val), sig(nullptr) {}
+};
+
+// Función para imprimir la lista enlazada
+void printList(Node* head) {
+    while (head != nullptr) {
+        cout << head->lista << " ";
+        head = head->sig;
+    }
+    cout << endl;
+}
+
+// Función para dividir la lista enlazada en dos sublistas
+Node* partition(Node* head, Node* end, Node*& newHead, Node*& newEnd) {
+    Node* pivot = end;
+    Node* prev = nullptr;
+    Node* current = head;
+    Node* tail = pivot;
+
+    while (current != pivot) {
+        if (current->lista < pivot->lista) {
+            if (newHead == nullptr)
+                newHead = current;
+            prev = current;
+            current = current->sig;
+        } else {
+            if (prev)
+                prev->sig = current->sig;
+            Node* tmp = current->sig;
+            current->sig = nullptr;
+            tail->sig = current;
+            tail = current;
+            current = tmp;
+        }
+    }
+
+    if (newHead == nullptr)
+        newHead = pivot;
+
+    newEnd = tail;
+
+    return pivot;
+}
+
+// Función principal para realizar QuickSort en una lista enlazada
+Node* quickSort(Node* head, Node* end) {
+    if (!head || head == end)
+        return head;
+
+    Node* newHead = nullptr;
+    Node* newEnd = nullptr;
+
+    Node* pivot = partition(head, end, newHead, newEnd);
+
+    if (newHead != pivot) {
+        Node* tmp = newHead;
+        while (tmp->sig != pivot)
+            tmp = tmp->sig;
+        tmp->sig = nullptr;
+        newHead = quickSort(newHead, tmp);
+        tmp = getTail(newHead);
+        tmp->sig = pivot;
+    }
+
+    pivot->sig = quickSort(pivot->sig, newEnd);
+
+    return newHead;
+}
+
+
+// Función auxiliar para obtener la cola de la lista enlazada
+Node* getTail(Node* head) {
+    while (head != nullptr && head->sig != nullptr)
+        head = head->sig;
+    return head;
+}
+
+int main() {
+    Node* head = new Node(5);
+    head->sig = new Node(2);
+    head->sig->sig = new Node(9);
+    head->sig->sig->sig = new Node(3);
+    head->sig->sig->sig->sig = new Node(7);
+    head->sig->sig->sig->sig->sig = new Node(1);
+
+    cout << "Lista enlazada original: ";
+    printList(head);
+
+    Node* tail = getTail(head);
+    head = quickSort(head, tail);
+
+    cout << "Lista enlazada ordenada: ";
+    printList(head);
+
+    return 0;
+}
